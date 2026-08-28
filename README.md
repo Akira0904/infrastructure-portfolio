@@ -1,134 +1,83 @@
-# Production-Style Infrastructure Lab
+# Infrastructure Portfolio
 
-A practical infrastructure portfolio project focused on Linux administration, virtualization, networking, VPN connectivity, monitoring, reverse proxying and infrastructure troubleshooting.
+Practical infrastructure portfolio focused on Linux systems, virtualization, networking, VPN connectivity, monitoring, security and troubleshooting.
 
-The lab is designed to demonstrate production-oriented infrastructure skills using a safe, fully synthetic environment with no real company data, credentials or production configuration.
+This repository is based on hands-on production infrastructure experience. All published examples are **sanitized and reconstructed**: addresses, domains, hostnames, credentials, organizational details and other sensitive information have been replaced with documentation-only values.
 
-## Core Technologies
+## Profile
 
-- Proxmox VE
-- Linux / Ubuntu Server
-- OPNsense
-- WireGuard
-- Nginx
-- Prometheus
-- Grafana
-- node_exporter
-- PostgreSQL monitoring
-- Bash
+**Anton Honcharenko** — Infrastructure & Systems Engineer
 
-## Architecture
+Primary areas: Linux / Ubuntu Server, Proxmox VE, OPNsense, WireGuard / OpenVPN, Nginx, PostgreSQL, Prometheus / Grafana, routing, NAT, firewalling, centralized logging and infrastructure troubleshooting.
+
+## Featured Case Study
+
+### Secure Self-Hosted Communication Infrastructure
+
+A sanitized production-oriented case study covering design, deployment, monitoring and troubleshooting of a secure self-hosted communication environment.
+
+**Key technologies:** Proxmox VE · Linux · OPNsense · WireGuard · Nginx · PostgreSQL · Matrix Synapse · Coturn · Prometheus · Grafana
+
+[Open the case study →](case-studies/secure-communication-platform/README.md)
+
+## High-Level Architecture
 
 ```mermaid
 flowchart TB
-    Internet((Internet))
-    FW[OPNsense\nFirewall / Router]
-    WG[WireGuard VPN]
+    USER[Remote / Internal Users]
+    CLOUD[Cloud VPN Gateway]
+    WG[WireGuard Tunnel]
+    FW[OPNsense Firewall / Router]
     DMZ[DMZ Network]
     MGMT[Management Network]
-    APP[Ubuntu App Server\nNginx]
-    MON[Monitoring Server\nPrometheus + Grafana]
+    APP[Communication Platform\nLinux / Nginx / Application]
     DB[PostgreSQL]
-    CLIENT[Remote Admin Client]
+    MON[Monitoring\nPrometheus / Grafana]
+    SIEM[Centralized Logging / SIEM]
+    ADMIN[Administrative Access]
 
-    Internet --> FW
-    CLIENT --> WG --> FW
-    FW --> DMZ
-    FW --> MGMT
-    DMZ --> APP
-    DMZ --> DB
-    MGMT --> MON
+    USER --> CLOUD --> WG --> FW
+    FW --> DMZ --> APP --> DB
+    FW --> MGMT --> MON
+    ADMIN --> MGMT
     MON --> APP
     MON --> DB
-    MON --> FW
+    APP --> SIEM
+    FW --> SIEM
 ```
 
-## What This Lab Demonstrates
+## What This Portfolio Demonstrates
 
-- Segmented network design with DMZ and management zones
-- Firewall and routing concepts
-- Secure remote access through WireGuard
-- Linux service deployment
-- Nginx reverse proxy configuration
-- Infrastructure monitoring with Prometheus and Grafana
-- Health checks and operational Bash scripts
-- Alert rule examples
-- Troubleshooting documentation
-- Safe configuration examples suitable for a public portfolio
+- Segmented infrastructure design
+- Linux service operations
+- VPN and routed connectivity
+- Routing, NAT and firewall policies
+- Prometheus / Grafana monitoring
+- PostgreSQL-backed services
+- Nginx reverse proxy concepts
+- Multi-WAN and failover validation
+- Centralized logging
+- Cross-layer incident troubleshooting
+- Production-oriented documentation
 
 ## Repository Structure
 
 ```text
-infrastructure-lab/
-├── README.md
-├── docs/
-│   ├── architecture.md
-│   ├── deployment.md
-│   ├── security.md
-│   └── troubleshooting.md
-├── monitoring/
-│   ├── prometheus.yml
-│   └── alert-rules.yml
-├── nginx/
-│   └── reverse-proxy.conf
-├── wireguard/
-│   ├── README.md
-│   ├── wg-server.example.conf
-│   └── wg-client.example.conf
-├── scripts/
-│   ├── check-wireguard.sh
-│   ├── service-health.sh
-│   └── disk-usage-alert.sh
-├── ansible/
-│   └── README.md
-└── docker/
-    └── README.md
+infrastructure-portfolio/
+├── case-studies/secure-communication-platform/
+├── examples/monitoring/
+├── examples/nginx/
+├── examples/wireguard/
+├── examples/scripts/
+├── automation/ansible/
+├── automation/docker/
+└── docs/
 ```
 
-## Lab Goals
+## Public Portfolio Safety
 
-The project is intentionally practical rather than theoretical. Each component should be deployed, tested and documented.
+This repository intentionally contains no real production secrets or topology identifiers. See [Disclosure Policy](docs/disclosure-policy.md).
 
-### Phase 1 — Core Infrastructure
-- [x] Define architecture
-- [x] Add safe configuration examples
-- [ ] Build Proxmox virtual lab
-- [ ] Configure OPNsense
-- [ ] Create DMZ and MGMT networks
-- [ ] Deploy Linux virtual machines
-- [ ] Configure WireGuard access
-- [ ] Deploy Nginx
-- [ ] Deploy Prometheus and Grafana
-- [ ] Configure node_exporter
-- [ ] Add alerts and dashboards
+## LinkedIn
 
-### Phase 2 — Automation
-- [ ] Add Ansible inventory and playbooks
-- [ ] Automate Linux baseline configuration
-- [ ] Automate node_exporter deployment
-- [ ] Automate Nginx deployment
-
-### Phase 3 — Containers
-- [ ] Add Docker Compose monitoring stack
-- [ ] Compare native-service vs containerized deployment
-
-## Security Notes
-
-This repository must never contain:
-
-- Private keys
-- Passwords or API tokens
-- Real public IP addresses
-- Internal company hostnames
-- Production DNS names
-- Sensitive network diagrams
-- Real user data
-
-All examples use documentation-only addresses and placeholder secrets.
-
-## Author
-
-**Anton Honcharenko**  
-Infrastructure & Systems Engineer
-
-LinkedIn: `https://www.linkedin.com/in/anton-honcharenko-mtx/`
+https://www.linkedin.com/in/anton-honcharenko-mtx/

@@ -1,21 +1,18 @@
-# Secrets
 *.key
 *.pem
 *.p12
 *.pfx
 .env
 .env.*
-
-# WireGuard private keys
 privatekey
 */privatekey
-
-# Editors / OS
+*.backup
+*.dump
+*.pcap
+*.pcapng
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
-
-# Temporary files
 *.tmp
 *.swp

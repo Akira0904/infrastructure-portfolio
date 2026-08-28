@@ -8,7 +8,7 @@ groups:
           severity: critical
         annotations:
           summary: "Instance is down"
-          description: "Prometheus target {{ $labels.instance }} has been unavailable for more than 2 minutes."
+          description: "{{ $labels.instance }} has been unavailable for more than 2 minutes."
 
       - alert: HighCPUUsage
         expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
@@ -21,14 +21,10 @@ groups:
 
       - alert: LowDiskSpace
         expr: |
-          (
-            node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"}
-            /
-            node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}
-          ) * 100 < 15
+          (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) * 100 < 15
         for: 10m
         labels:
           severity: warning
         annotations:
           summary: "Low disk space"
-          description: "Filesystem on {{ $labels.instance }} has less than 15% free space."
+          description: "{{ $labels.instance }} has less than 15% free space."
