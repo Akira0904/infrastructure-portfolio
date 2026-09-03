@@ -6,6 +6,13 @@ This case study describes a **sanitized reconstruction** of a production self-ho
 
 The public version removes or changes sensitive details while preserving the technical concepts, design decisions and troubleshooting approach.
 
+## Infrastructure Architecture
+
+![Secure Communication Platform Architecture](assets/architecture.png)
+
+> Sanitized and reconstructed architecture based on hands-on production experience.  
+> IP addresses, domains, hostnames and identifying details have been replaced with documentation-only values.
+
 ## Objectives
 
 - Self-hosted communication services
