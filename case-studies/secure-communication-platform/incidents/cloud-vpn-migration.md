@@ -2,17 +2,23 @@
 
 ## Overview
 
-A cloud-hosted WireGuard gateway used to provide secure connectivity between external/cloud infrastructure and an internal production environment was migrated from Microsoft Azure to DigitalOcean.
+A cloud-hosted WireGuard gateway providing secure connectivity between external/cloud infrastructure and an internal production environment was migrated from **Microsoft Azure to DigitalOcean**.
 
-The goal was to move the VPN entry point to the new cloud provider while preserving application connectivity, routing behavior, firewall policies and operational monitoring.
+The objective was to move the VPN entry point to the new cloud provider while preserving:
 
-This case study is sanitized. Public IP addresses, domains, internal networks, credentials and organizational identifiers are intentionally omitted or replaced.
+- VPN connectivity
+- Routing behavior
+- Firewall policies
+- Application availability
+- Monitoring and notifications
+
+> **Note:** This case study is sanitized. Public IP addresses, domains, internal networks, credentials and organizational identifiers have been removed or replaced.
 
 ---
 
 ## Environment
 
-The simplified traffic path was:
+### Simplified Traffic Flow
 
 ```text
 External Clients / Services
@@ -20,234 +26,297 @@ External Clients / Services
           v
    Cloud VPN Gateway
           |
+          v
      WireGuard Tunnel
           |
           v
    OPNsense Firewall
           |
+          v
      Internal Services
+```
 
-Technologies
-Microsoft Azure
-DigitalOcean
-Linux
-WireGuard
-OPNsense
-Routing
-NAT
-Firewall policies
-Infrastructure monitoring
+### Technologies
 
-Problem
+- Microsoft Azure
+- DigitalOcean
+- Linux
+- WireGuard
+- OPNsense
+- Routing
+- NAT
+- Firewall policies
+- Infrastructure monitoring
 
-After migrating the cloud-side VPN gateway to the new provider, end-to-end connectivity had to be restored and validated across the complete path.
+---
 
-During troubleshooting, it became clear that a successful WireGuard handshake alone was not sufficient to confirm that production traffic was working correctly.
+## Problem
+
+After migrating the cloud-side VPN gateway to the new provider, end-to-end connectivity had to be restored and validated across the complete infrastructure path.
+
+During troubleshooting, it became clear that a successful WireGuard handshake alone was not sufficient to confirm that production traffic was functioning correctly.
 
 The migration affected several infrastructure layers:
 
-VPN endpoint configuration
-Public endpoint dependencies
-Firewall rules
-Routing
-NAT
-Return paths
-Application connectivity
-Monitoring and notification logic
+- VPN endpoint configuration
+- Public endpoint dependencies
+- Firewall rules
+- Routing
+- NAT
+- Return paths
+- Application connectivity
+- Monitoring and notification logic
 
-Symptoms
+---
+
+## Symptoms
 
 During different stages of the migration, the following behavior was investigated:
 
-WireGuard handshake initially unavailable or inconsistent
-VPN tunnel later showing a valid handshake while routed traffic still required verification
-Internal services not reachable through the expected path
-Differences between the previous and new cloud networking environments
-Firewall and routing configuration requiring validation after the public endpoint changed
-Monitoring behavior requiring post-migration verification
-Investigation
+- WireGuard handshake initially unavailable or inconsistent
+- Tunnel later showing a valid handshake while routed traffic still required verification
+- Internal services not reachable through the expected path
+- Routing behavior differing from the previous cloud environment
+- Firewall configuration requiring validation after the endpoint change
+- Monitoring and notifications requiring post-migration verification
 
-The migration was troubleshot layer by layer.
+---
 
-1. Cloud Gateway
+## Investigation
 
-The following components were verified:
+The issue was troubleshot layer by layer.
 
-Linux network interfaces
-Public connectivity
-WireGuard service state
-UDP listener
-Cloud firewall rules
-Local Linux firewall rules
+### 1. Cloud Gateway
+
+The cloud-side Linux gateway was checked first.
+
+Verified:
+
+- Network interfaces
+- Public connectivity
+- WireGuard service state
+- UDP listener
+- Cloud firewall rules
+- Local Linux firewall rules
 
 Example commands:
 
+```bash
 ip addr
 ip route
 ss -lunp
 systemctl status wg-quick@wg0
 wg show
-2. WireGuard Tunnel
+```
 
-The following parameters were checked:
+---
 
-Peer public keys
-Endpoint configuration
-AllowedIPs
-Latest handshake
-Transmitted and received traffic
-Tunnel interface addressing
+### 2. WireGuard Tunnel
+
+The WireGuard configuration and tunnel state were validated.
+
+Checked:
+
+- Peer public keys
+- Endpoint configuration
+- `AllowedIPs`
+- Tunnel interface addressing
+- Latest handshake
+- Transmitted and received traffic
 
 Example commands:
 
+```bash
 wg show
 ip addr show wg0
+```
 
-A successful handshake was treated only as confirmation that the WireGuard peers could communicate.
+A valid handshake confirmed that the WireGuard peers could communicate.
 
-It was not considered proof that application traffic was correctly routed.
+However, it **did not prove that routed application traffic was working end-to-end**.
 
-3. Routing
+---
+
+### 3. Routing
 
 Routing was validated on both sides of the tunnel.
 
 Example commands:
 
+```bash
 ip route
 ip route get <destination>
+```
 
 The following questions were checked:
 
-Is the destination network routed through WireGuard?
-Is the correct gateway selected?
-Is policy routing involved?
-Does the remote side have a valid return route?
-Does any route still depend on the previous cloud environment?
-4. Firewall and NAT
+- Is the destination network routed through WireGuard?
+- Is the correct gateway selected?
+- Is policy routing involved?
+- Does the remote side have a valid return route?
+- Does any route still depend on the previous cloud environment?
 
-The following areas were reviewed:
+---
 
-Cloud firewall rules
-Linux firewall configuration
-OPNsense firewall rules
-NAT behavior
-Forwarding between VPN and internal networks
-Connection states
+### 4. Firewall and NAT
 
-The troubleshooting process separated the problem into three stages:
+After confirming tunnel connectivity, firewall and NAT behavior were reviewed.
 
+Checked:
+
+- Cloud firewall rules
+- Linux firewall configuration
+- OPNsense firewall rules
+- NAT behavior
+- Forwarding between VPN and internal networks
+- Connection states
+- Return traffic
+
+The troubleshooting process was divided into three stages:
+
+```text
 Can the packet reach the VPN gateway?
-            |
-            v
+                |
+                v
 Can the packet cross the WireGuard tunnel?
-            |
-            v
-Can the packet reach the internal service and return?
+                |
+                v
+Can the packet reach the internal service
+and successfully return?
+```
 
-This helped distinguish tunnel problems from routing, firewall and return-path issues.
+This helped separate VPN problems from routing, firewall and return-path issues.
 
-5. Application Connectivity
+---
 
-After the network path was validated, application services were tested independently.
+### 5. Application Connectivity
 
-This prevented application-layer failures from being incorrectly attributed to WireGuard.
+Once the network path was validated, application services were tested independently.
 
 Validation included:
 
-Service reachability
-Client connectivity
-Reverse proxy access
-Required TCP/UDP service paths
-6. Monitoring
+- Service reachability
+- Client connectivity
+- Reverse proxy access
+- Required TCP/UDP service paths
 
-Post-migration checks included:
+This prevented application-layer problems from being incorrectly attributed to WireGuard.
 
-WireGuard tunnel status
-Handshake freshness
-Tunnel traffic
-Service availability
-Monitoring target state
-Alert delivery
-Operational notifications
-Resolution
+---
 
-The cloud VPN endpoint was successfully migrated to DigitalOcean and the infrastructure configuration was updated for the new environment.
+### 6. Monitoring
 
-Endpoint-dependent configuration, firewall behavior and routing paths were reviewed and adjusted where required.
+After connectivity was restored, monitoring was validated.
 
-The complete end-to-end traffic path was then validated instead of relying only on WireGuard tunnel status.
+Checked:
 
-Verification
+- WireGuard tunnel state
+- Handshake freshness
+- Tunnel traffic
+- Service availability
+- Monitoring targets
+- Alert delivery
+- Operational notifications
 
-The migration was considered successful only after all of the following were confirmed.
+---
 
-VPN
-WireGuard service running
-Stable peer handshake
-Bidirectional tunnel traffic
-Network
-Correct routes installed
-Internal networks reachable
-Return routing working
-Firewall rules matching expected traffic
-NAT behavior validated
-Application
-Production services reachable through the new path
-Client connectivity operating normally
-Monitoring
-VPN state visible in monitoring
-Traffic metrics available
-Service monitoring healthy
-Notifications operating as expected
-Key Lessons
-A VPN handshake is not end-to-end validation
+## Resolution
 
-A valid WireGuard handshake confirms connectivity between VPN peers, but it does not prove that traffic can reach services behind those peers.
+The cloud VPN gateway was successfully migrated from Microsoft Azure to DigitalOcean.
 
-Cloud migration affects more than the virtual machine
+Configuration dependent on the previous cloud environment was reviewed and adjusted where required, including:
+
+- VPN endpoint configuration
+- Routing
+- Firewall policies
+- NAT behavior
+- Connectivity between the VPN and internal networks
+
+The complete traffic path was then validated instead of relying only on WireGuard tunnel status.
+
+---
+
+## Verification
+
+The migration was considered successful only after all infrastructure layers were confirmed.
+
+### VPN
+
+- WireGuard service running
+- Stable peer handshake
+- Bidirectional tunnel traffic
+
+### Network
+
+- Correct routes installed
+- Internal networks reachable
+- Return routing working
+- Firewall rules matching expected traffic
+- NAT behavior validated
+
+### Application
+
+- Production services reachable through the new path
+- Client connectivity operating normally
+
+### Monitoring
+
+- VPN state visible in monitoring
+- Traffic metrics available
+- Service monitoring healthy
+- Notifications operating as expected
+
+---
+
+## Key Lessons
+
+### A VPN handshake is not end-to-end validation
+
+A valid WireGuard handshake confirms connectivity between VPN peers, but it does not prove that services behind those peers are reachable.
+
+### Cloud migration affects more than the VM
 
 Moving a gateway between cloud providers can affect:
 
-Public addressing
-Firewall behavior
-Routing assumptions
-NAT
-Monitoring
-Dependencies on the previous endpoint
-Validate the return path
+- Public addressing
+- Firewall behavior
+- Routing assumptions
+- NAT
+- Monitoring
+- Dependencies on the previous endpoint
 
-A working forward route with an incorrect or missing return route can create confusing partial-connectivity symptoms.
+### Always validate the return path
 
-Troubleshoot in layers
+A valid forward route with an incorrect or missing return route can create confusing partial-connectivity symptoms.
 
-A structured troubleshooting sequence reduces guesswork:
+### Troubleshoot in layers
 
-Cloud connectivity
-       |
-       v
-WireGuard handshake
-       |
-       v
-Tunnel routing
-       |
-       v
+A structured troubleshooting process reduces guesswork:
+
+```text
+Cloud Connectivity
+        |
+        v
+WireGuard Handshake
+        |
+        v
+Tunnel Routing
+        |
+        v
 Firewall / NAT
-       |
-       v
-Return routing
-       |
-       v
+        |
+        v
+Return Routing
+        |
+        v
 Application
-       |
-       v
+        |
+        v
 Monitoring
-Technologies
-Microsoft Azure
-DigitalOcean
-Linux
-WireGuard
-OPNsense
-Routing
-NAT
-Firewall policies
-Infrastructure monitoring
+```
+
+---
+
+## Technologies
+
+`Microsoft Azure` · `DigitalOcean` · `Linux` · `WireGuard` · `OPNsense` · `Routing` · `NAT` · `Firewall Policies` · `Infrastructure Monitoring`
