@@ -12,6 +12,40 @@ Primary areas: Linux / Ubuntu Server, Proxmox VE, OPNsense, WireGuard / OpenVPN,
 
 ## Featured Case Study
 
+## Portfolio Highlights
+
+### Architecture
+
+A sanitized production-oriented infrastructure design including:
+
+- Proxmox virtualization
+- OPNsense firewall and routing
+- DMZ / management network segmentation
+- WireGuard connectivity
+- Nginx reverse proxy
+- PostgreSQL-backed services
+- Prometheus and Grafana monitoring
+
+[View architecture and full case study →](case-studies/secure-communication-platform/README.md)
+
+### Monitoring
+
+Real sanitized monitoring examples demonstrate:
+
+- Linux VM resource monitoring
+- Service availability
+- Prometheus exporter status
+- WireGuard tunnel state
+- Handshake monitoring
+- Network traffic visibility
+
+[View monitoring examples →](case-studies/secure-communication-platform/README.md#monitoring--observability)
+
+### Incident Case Studies
+
+- [Cloud VPN Gateway Migration](case-studies/secure-communication-platform/incidents/cloud-vpn-migration.md)
+- [Multi-WAN Failover Troubleshooting](case-studies/secure-communication-platform/incidents/wan-failover.md)
+
 ### Secure Self-Hosted Communication Infrastructure
 
 A sanitized production-oriented case study covering design, deployment, monitoring and troubleshooting of a secure self-hosted communication environment.
