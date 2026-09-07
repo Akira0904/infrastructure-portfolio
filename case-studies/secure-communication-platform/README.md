@@ -13,6 +13,20 @@ The public version removes or changes sensitive details while preserving the tec
 > Sanitized and reconstructed architecture based on hands-on production experience.  
 > IP addresses, domains, hostnames and identifying details have been replaced with documentation-only values.
 
+## Monitoring & Observability
+
+### Service and VPN Monitoring
+
+![Service and VPN Monitoring](assets/service-and-vpn-monitoring.png)
+
+> Sanitized Grafana view demonstrating service availability, Prometheus exporters, WireGuard tunnel status, handshake monitoring and network traffic visibility.
+
+### Virtual Machine Resource Monitoring
+
+![Virtual Machine Resource Monitoring](assets/vm-resource-monitoring.png)
+
+> Resource overview for Linux virtual machines, including power state, CPU, RAM, disk and swap utilization.
+
 ## Objectives
 
 - Self-hosted communication services
