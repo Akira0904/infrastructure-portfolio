@@ -12,6 +12,14 @@ Primary areas: Linux / Ubuntu Server, Proxmox VE, OPNsense, WireGuard / OpenVPN,
 
 ## Featured Case Study
 
+### Secure Self-Hosted Communication Infrastructure
+
+A sanitized production-oriented case study covering design, deployment, monitoring and troubleshooting of a secure self-hosted communication environment.
+
+**Key technologies:** Proxmox VE · Linux · OPNsense · WireGuard · Nginx · PostgreSQL · Matrix Synapse · Coturn · Prometheus · Grafana
+
+[Open the full case study →](case-studies/secure-communication-platform/README.md)
+
 ## Portfolio Highlights
 
 ### Architecture
@@ -26,7 +34,7 @@ A sanitized production-oriented infrastructure design including:
 - PostgreSQL-backed services
 - Prometheus and Grafana monitoring
 
-[View architecture and full case study →](case-studies/secure-communication-platform/README.md)
+[View architecture →](case-studies/secure-communication-platform/README.md#infrastructure-architecture)
 
 ### Monitoring
 
