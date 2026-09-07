@@ -54,14 +54,6 @@ Real sanitized monitoring examples demonstrate:
 - [Cloud VPN Gateway Migration](case-studies/secure-communication-platform/incidents/cloud-vpn-migration.md)
 - [Multi-WAN Failover Troubleshooting](case-studies/secure-communication-platform/incidents/wan-failover.md)
 
-### Secure Self-Hosted Communication Infrastructure
-
-A sanitized production-oriented case study covering design, deployment, monitoring and troubleshooting of a secure self-hosted communication environment.
-
-**Key technologies:** Proxmox VE · Linux · OPNsense · WireGuard · Nginx · PostgreSQL · Matrix Synapse · Coturn · Prometheus · Grafana
-
-[Open the case study →](case-studies/secure-communication-platform/README.md)
-
 ## High-Level Architecture
 
 ```mermaid
