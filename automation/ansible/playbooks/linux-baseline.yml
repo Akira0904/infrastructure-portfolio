@@ -10,7 +10,7 @@
         update_cache: true
         cache_valid_time: 3600
 
-    - name: Install baseling packages
+    - name: Install baseline packages
       ansible.builtin.apt:
         name: "{{ baseline_packages }}"
         state: present
