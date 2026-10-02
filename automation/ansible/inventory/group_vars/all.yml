@@ -1,0 +1,9 @@
+---
+baseline_packages:
+  - curl
+  - wget
+  - vim
+  - htop
+  - unzip
+  - ca-certificates
+  - net-tools

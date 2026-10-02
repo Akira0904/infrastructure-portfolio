@@ -16,3 +16,4 @@ privatekey
 Thumbs.db
 *.tmp
 *.swp
+automation/ansible/inventory/hosts.yml
