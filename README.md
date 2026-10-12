@@ -49,6 +49,20 @@ Real sanitized monitoring examples demonstrate:
 
 [View monitoring examples →](case-studies/secure-communication-platform/README.md#monitoring--observability)
 
+### Infrastructure Automation
+
+Practical Ansible automation examples include:
+
+- Linux baseline configuration
+- Remote server management over SSH
+- Prometheus Node Exporter deployment
+- systemd service management
+- Jinja2 templates
+- Handlers and validation
+- Idempotent configuration management
+
+[View Ansible automation ->](automation/ansible/README.md)
+
 ### Incident Case Studies
 
 - [Cloud VPN Gateway Migration](case-studies/secure-communication-platform/incidents/cloud-vpn-migration.md)
