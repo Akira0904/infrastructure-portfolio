@@ -38,7 +38,10 @@ automation/ansible/
 │   └── group_vars/
 │       └── all.yml
 ├── playbooks/
-│   └── linux-baseline.yml
+│   ├── linux-baseline.yml
+│   ├── node-exporter.yml
+│   └── templates/
+│       └── node_exporter.service.j2
 └── README.md
 ```
 
@@ -77,6 +80,29 @@ Baseline packages include:
 - unzip
 - ca-certificates
 - net-tools
+
+## Prometheus Node Exporter Deployment
+
+The second automation workflow deploys Prometheus Node Exporter to a remote Ubuntu server.
+
+The playbook automatically:
+
+- Creates a dedicated `node_exporter` system account
+- Downloads a pinned Node Exporter release
+- Verifies the downloaded archive using SHA256
+- Extracts and installs the binary
+- Deploys a systemd service from a Jinja2 template
+- Enables and starts the service
+- Uses a handler to restart Node Exporter when configuration changes
+- Waits for TCP port `9100`
+- Validates the `/metrics` HTTP endpoint
+- Reports the installed Node Exporter version
+
+### Deployment
+
+```bash
+ansible-playbook playbooks/node-exporter.yml --ask-become-pass
+```
 
 ## Connectivity Test
 
@@ -153,14 +179,14 @@ This demonstrates idempotent behavior: Ansible detects that the target system is
 - Passwords and become credentials are not stored in configuration files.
 - Public examples use documentation-only addressing.
 
+```markdown
 ## Next Steps
 
 Planned extensions:
 
-- node_exporter deployment
-- systemd service management
-- Nginx deployment
-- Ansible roles
-- handlers
-- templates
-- multiple managed hosts
+- Refactor Node Exporter deployment into an Ansible role
+- Add role defaults and handlers
+- Deploy Nginx using a dedicated role
+- Manage configuration files with Jinja2 templates
+- Add a second managed Linux host
+- Apply roles to multiple hosts
