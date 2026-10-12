@@ -47,7 +47,7 @@
         mode: "0755"
       notify: Restart Node Exporter
 
-    - name: Install Node Exporter sytemd unit
+    - name: Install Node Exporter systemd unit
       template:
         src: "{{ playbook_dir }}/templates/node_exporter.service.j2"
         dest: /etc/systemd/system/node_exporter.service
@@ -79,7 +79,7 @@
         status_code: 200
         return_content: false
 
-    - name: Get node Exporter version
+    - name: Get Node Exporter version
       command:
         cmd: /usr/local/bin/node_exporter --version
       register: node_exporter_version_output

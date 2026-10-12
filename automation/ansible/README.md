@@ -103,6 +103,31 @@ The playbook automatically:
 ```bash
 ansible-playbook playbooks/node-exporter.yml --ask-become-pass
 ```
+### Validation
+
+The deployment validates the service automatically by checking:
+
+- TCP port `9100`
+- HTTP `/metrics` endpoint
+- Installed Node Exporter version
+
+Manual verification:
+
+```bash
+curl -s http://<target-host>:9100/metrics | head
+
+Idempotency
+
+After the initial deployment, the playbook was executed again against the same target.
+
+The second run completed with:
+
+- changed=0
+- unreachable=0
+- failed=0
+
+This confirms that the Node Exporter deployment is idempotent.
+```
 
 ## Connectivity Test
 
@@ -179,7 +204,6 @@ This demonstrates idempotent behavior: Ansible detects that the target system is
 - Passwords and become credentials are not stored in configuration files.
 - Public examples use documentation-only addressing.
 
-```markdown
 ## Next Steps
 
 Planned extensions:
