@@ -1,6 +1,6 @@
-# Ansible Linux Baseline Automation
+# Ansible Infrastructure Automation
 
-A practical Ansible project demonstrating remote Linux server configuration over SSH.
+Practical Ansible automation project demonstrating remote Linux server configuration over SSH.
 
 The automation was tested against an Ubuntu Server 22.04 virtual machine using a dedicated Ansible control node.
 
@@ -24,6 +24,11 @@ Ubuntu Target Server
 - Package management with the `apt` module
 - Ansible facts
 - Configuration file management
+- Prometheus Node Exporter deployment
+- Jinja2 templates
+- systemd service management
+- Ansible handlers
+- Port and HTTP endpoint validation
 - Check mode
 - Syntax validation
 - Idempotent infrastructure automation
@@ -81,6 +86,71 @@ Baseline packages include:
 - ca-certificates
 - net-tools
 
+### Connectivity Test
+
+Ansible connectivity can be verified with:
+
+```bash
+ansible all -m ping
+```
+
+Expected result:
+
+```text
+ubuntu-target01 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+```
+
+### Privilege Escalation Test
+
+```bash
+ansible all -b -m command -a "whoami" --ask-become-pass
+```
+
+Expected result:
+
+```text
+root
+```
+
+### Syntax Validation
+
+Before running the playbook:
+
+```bash
+ansible-playbook playbooks/linux-baseline.yml --syntax-check
+```
+
+### Check Mode
+
+Changes can be previewed using:
+
+```bash
+ansible-playbook playbooks/linux-baseline.yml --check --ask-become-pass
+```
+
+### Deployment
+
+```bash
+ansible-playbook playbooks/linux-baseline.yml --ask-become-pass
+```
+
+### Idempotency
+
+The playbook was executed twice against the same Ubuntu target.
+
+After the first run configured the system, the second run completed with:
+
+```text
+changed=0
+unreachable=0
+failed=0
+```
+
+This demonstrates idempotent behavior: Ansible detects that the target system is already in the desired state and does not apply unnecessary changes.
+
 ## Prometheus Node Exporter Deployment
 
 The second automation workflow deploys Prometheus Node Exporter to a remote Ubuntu server.
@@ -103,6 +173,7 @@ The playbook automatically:
 ```bash
 ansible-playbook playbooks/node-exporter.yml --ask-become-pass
 ```
+
 ### Validation
 
 The deployment validates the service automatically by checking:
@@ -115,78 +186,13 @@ Manual verification:
 
 ```bash
 curl -s http://<target-host>:9100/metrics | head
+```
 
-Idempotency
+### Idempotency
 
 After the initial deployment, the playbook was executed again against the same target.
 
 The second run completed with:
-
-- changed=0
-- unreachable=0
-- failed=0
-
-This confirms that the Node Exporter deployment is idempotent.
-```
-
-## Connectivity Test
-
-Ansible connectivity can be verified with:
-
-```bash
-ansible all -m ping
-```
-
-Expected result:
-
-```text
-ubuntu-target01 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
-```
-
-## Privilege Escalation Test
-
-```bash
-ansible all -b -m command -a "whoami" --ask-become-pass
-```
-
-Expected result:
-
-```text
-root
-```
-
-## Syntax Validation
-
-Before running the playbook:
-
-```bash
-ansible-playbook playbooks/linux-baseline.yml --syntax-check
-```
-
-## Check Mode
-
-Changes can be previewed using:
-
-```bash
-ansible-playbook playbooks/linux-baseline.yml --check --ask-become-pass
-```
-
-## Deployment
-
-The playbook is executed with:
-
-```bash
-ansible-playbook playbooks/linux-baseline.yml --ask-become-pass
-```
-
-## Idempotency
-
-The playbook was executed twice against the same Ubuntu target.
-
-After the first run configured the system, the second run completed with:
 
 ```text
 changed=0
@@ -194,7 +200,7 @@ unreachable=0
 failed=0
 ```
 
-This demonstrates idempotent behavior: Ansible detects that the target system is already in the desired state and does not apply unnecessary changes.
+This confirms that the Node Exporter deployment is idempotent.
 
 ## Security Notes
 
